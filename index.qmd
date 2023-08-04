@@ -1,0 +1,200 @@
+---
+title: "Graph Mover's Distance"
+subtitle: An Efficiently Computable Distance Measure for Geometric Graphs
+author: "<span style='color:red'>Sush Majhi, UC Berkeley</span><br>CCCG 2023"
+format: 
+    revealjs:
+        slide-number: true
+        self-contained: true
+        incremental: true
+bibliography: references.bib
+---
+
+## Today's Agenda
+- Motivation
+- What is a *Geometric Graph*?
+- Why defining a similarity measure for them is challenging?
+- Existing distance measures
+- Graph Mover's distance
+- Empirical results
+- Discussions
+
+## Motivation {.smaller}
+
+- Graph representation facilitates easy desciption of relational patterns
+- Pattern Recognition becomes the problem of measuring similarity between two
+graphs
+- A distance measure is deemed *meaningful* if
+    - small distance implies similarity
+    - large distance reveals disparity
+
+- Graph comaprison has been widely studied both by the *Pattern Recognition* and *Database* community.
+    - Geometric graphs are new! [@cgkss-msgg-09] [@majhi2022distance]
+
+
+
+## Geometric Graphs $\mathbb{R}^d$ {.smaller}
+A combinatorial graph $G=(V,E)$ is called *geometric* if  
+
+- $V\subset\mathbb{R}^d$  
+- An edge $(u,v)\in E$ is identified with the line segment $\overline{uv}$ 
+- edges intersect only at their endpoints
+
+. . .
+
+![](geometric.svg){fig-align="center"}
+
+## Applications {.smaller}
+
+**Letter Recognition** 
+
+![IAM [@da_vitoria_lobo_iam_2008]](sample.png){width=500}
+
+. . . 
+
+**Map Comaprison**
+
+::: {layout-ncol=2}
+
+![mapconstruction.org [@mapconstructionorg]](mahmuda.jpg){width=400}
+
+![](sophia.jpg){width=400}
+
+:::
+
+## How to Define Distance between Two Graphs?
+Given two geometric graphs $G, H$:
+
+- check if they are (combinatorial) isomorphic
+    - not robust
+    - not lenient to local, minor defects
+- correct *small* defects, but at a *small* cost
+
+## Geometric Edit Distance (GED)
+
+::: {layout-ncol=5}
+
+![](0.png)
+
+:::{.fragment}
+![$C_E|u_1u_2|$](1.png)
+:::
+
+:::{.fragment}
+![<span style='font-size: 0.7em'>$C_V|v_3-u_2|$<br> $+C_E||u_3v_3|-|u_2u_3||$</span>](2.png)
+:::
+
+:::{.fragment}
+![<span style='font-size: 0.7em'>$C_V|u_3-v_2|$<br> $+C_E||v_2v_3|-|u_3v_3||$</span>](3.png)
+:::
+
+![](4.png)
+
+:::
+
+## Geometric Edit Distance (GED)
+$$GED(G,H):=\inf cost(P),$$
+where the infimum is taken over all edit paths from $G$ to $H$.
+
+
+::: {.fragment}
+#### Pros
+- the notion is very intuitive
+- GED is a metric for positive contants $C_V, C_E$.
+:::
+
+::: {.fragment}
+#### Cons
+- not computationally feasible
+- infinitely many edit paths
+:::
+
+## Geometric Graph Distance (GGD)
+- choose isomporhpic subgraphs $G',H'$ of $G,H$, respectively
+- delete the rest and *pay* for it
+- finally, *morph* $G'$ onto $H'$ and *pay* for it
+
+. . .
+
+![](pi.png){fig-align="center"}
+
+
+## Geometric Graph Distance (GGD)
+
+$$
+GGD(G,H):=\min_{\text{matching }\pi}cost(\pi).
+$$
+
+- GGD is a metric
+- computationally feasible
+- NP-hard [@majhi2022distance] even if  
+    - planar, and  
+    - $C_V,C_E$ arbitrary
+- No PTAS known
+
+## Earth Mover's Distance (EMD)
+- Our graph mover's distance is based on the idea of the classic Earth Mover's  Distance
+- Originally developed as a similarity measure between distributions
+- Application to images [@rubner_earth_2000]
+- Can be efficiently solved as a transportation problem on a bipartite graph
+
+## Formulation of the EMD {.smaller}
+- Weighted point sets $P=\{(p_i,w_{p_i})\}_{i=1}^m$ and $Q=\{(q_j,w_{q_j})\}_{j=1}^n$
+- Ground distances $[d_{i,j}]$, cost of transporting a unit product from $p_i$ to $q_j$
+- Feasibility: $\sum w_{p_i}=\sum w_{q_j}$
+- A flow of supply is given by a matrix $[f_{i,j}]$, entries denoting the units of supply from $p_i$ to $q_j$
+- Minimize the cost: $\sum_{i=1}^m\sum_{j=1}^n f_{i,j}d_{i,j}$
+- Subject to:
+    - $f_{i,j}\geq0$
+    - $\sum_{j=1}^n f_{i,j} = w_i$
+    - $\sum_{i=1}^m f_{i,j} = w_j$
+
+- The EMD is defined as the cost of the optimal flow.
+
+## Graph Mover's Distance (GMD)
+::: {layout-ncol=2}
+
+![](11.png)
+
+![](gmd.png)
+
+:::
+
+- GMD can be computed in $O(n^3)$-time for geometric graphs with at most $n$ vertices
+
+## Metric Properties of the GMD
+- GMD is a pseudo-metric
+- $GMD(G,H)=0$ does not always imply that $G=H$ as geometric graphs
+
+. . .
+
+![](metric.png){fig-align="center" width="600"}
+
+## Experiments {.smaller}
+- `LETTER` dataset from IAM [@da_vitoria_lobo_iam_2008]
+- $15$ prototype drawings for letters (A, E, F, H, I, K, L, M, N, T, V, W, X, Y, and Z) from the English alphabet
+- three levels (`LOW`, `MED`, and `HIGH`) distortions are applied
+- On each distortion level, $2250$ letter drawings from the prototypes
+
+. . .
+
+![](letter.png){width="600" fig-align="center"}
+
+## Empirical Results
+For each test graph, we did the following:
+
+- compute the GMD to the $15$ prototypes
+- sort the prototypes in the increasing order of its GMD
+- check if the label is present in the first $k$ prototypes
+
+ . . .
+
+![](result.png){width="700" fig-align="center"}
+
+## Discussions
+- How to retain all the metric properties for the GMD?
+- Can the GMD be useful in supervised learning for classification?
+- Currently, NONE of the graph distances (GED, GGD, GMD) is stable with respect another. Can we develop a stable graph distance?
+
+
+## References
