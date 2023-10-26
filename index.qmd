@@ -1,6 +1,6 @@
 ---
 title: "Distance Measures for Geometric Graphs"
-author: "Sushovan Majhi, George Washington University<br>Tulane University 2023"
+author: "Sushovan Majhi<br>Tulane University, 2023"
 format: 
     revealjs:
         theme: dark
@@ -18,11 +18,11 @@ html-math-method: katex
 - The two friends: *GED* and *GGD*
 - How do they compare?
 - Computational Complexity of GGD
-- Graph Mover's distance
+- Graph Mover's distance (GMD)
 - Empirical results
 - Discussions
 
-## Motivation {.smaller}
+## Motivation 
 
 - Graph representation facilitates easy desciption of relational patterns
 - *Pattern Recognition* becomes the problem of measuring similarity between two
@@ -32,7 +32,7 @@ graphs
     - large distance reveals disparity
 
 - Graph comaprison has been widely studied both by the *Pattern Recognition* and *Database* community.
-    - Geometric graphs are new! [@cgkss-msgg-09] [@majhi2022dist]
+    - Geometric graphs are new!
 
 
 
@@ -157,7 +157,7 @@ where $\Delta$ is the maximum degree of the two graphs.
     - $C_V,C_E$ arbitrary
 - No PTAS known
 
-## Earth Mover's Distance (EMD) [@DBLP:conf/cccg/Majhi23] 
+## Earth Mover's Distance (EMD) 
 - Our graph mover's distance is based on the idea of the classic Earth Mover's  Distance
 - Originally developed as a similarity measure between distributions
 - Application to images [@rubner_earth_2000]
@@ -180,10 +180,12 @@ where $\Delta$ is the maximum degree of the two graphs.
 ::: {layout-ncol=2}
 
 ![](11.png)
+[@DBLP:conf/cccg/Majhi23]
 
 ![](gmd.png)
 
 :::
+
 
 - GMD can be computed in $O(n^3)$-time for geometric graphs with at most $n$ vertices
 
@@ -206,7 +208,7 @@ where $\Delta$ is the maximum degree of the two graphs.
 ![](letter.png){width="600" fig-align="center"}
 
 ## Empirical Results
-For each test graph, we did the following in [@DBLP:conf/cccg/Majhi23]:
+For each test graph
 
 - compute the GMD to the $15$ prototypes
 - sort the prototypes in the increasing order of its GMD
